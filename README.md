@@ -2,6 +2,16 @@
 
 A FastAPI application for searching properties and retrieving tax information from Fairfax County iCare.
 
+## 🎯 Live API
+
+**Public API URL:** https://govtaxcheck.onrender.com
+
+**📖 [Complete User Guide](USER_GUIDE.md)** - Learn how to use the API
+
+**🔗 [Interactive Docs](https://govtaxcheck.onrender.com/docs)** - Try the API in your browser
+
+---
+
 ## 🚀 Quick Deploy to Render (Free)
 
 **Want to deploy this API to the cloud for free?**

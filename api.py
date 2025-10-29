@@ -166,7 +166,8 @@ async def root():
         "endpoints": {
             "counties": "GET /counties",
             "search": "POST /search/address",
-            "map_search": "GET /search/map/{map_number}",
+            "map_search": "GET /search/map/{county}/{map_number}",
+            "map_search_legacy": "GET /search/map/{map_number} (defaults to fairfax-va)",
             "tax_summary": "GET /tax-summary",
         },
     }
@@ -246,22 +247,53 @@ async def search_address(request: AddressSearchRequest):
         )
 
 
-@app.get("/search/map/{map_number}")
-async def search_by_map_number(map_number: str):
+@app.get("/search/map/{county}/{map_number}")
+async def search_by_map_number(county: str, map_number: str):
     """
     Search for a property by map number and return property details with tax information.
 
-    This endpoint searches for a specific property using its Fairfax County map number
-    (e.g., "0583 01 0001") and returns both the property details and tax summary in one call.
+    Supports multiple counties. Map number format varies by county:
+    - Fairfax County, VA: "0812030026" or "0812 03 0026"
+    - Mecklenburg County, NC: Parcel ID format (coming soon)
+
+    Returns both the property details and tax summary in one call.
     """
+    # Validate county
+    if county not in SUPPORTED_COUNTIES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"County '{county}' not supported. Available: {list(SUPPORTED_COUNTIES.keys())}"
+        )
+
+    county_info = SUPPORTED_COUNTIES[county]
+
+    # Check if county has map search implemented
+    if county_info.get("status") == "coming_soon":
+        raise HTTPException(
+            status_code=501,
+            detail=f"{county_info['name']} map search is coming soon"
+        )
+
+    if "map_search" not in county_info.get("features", []) and "parcel_search" not in county_info.get("features", []):
+        raise HTTPException(
+            status_code=501,
+            detail=f"{county_info['name']} does not support map/parcel search"
+        )
+
     session = requests.Session()
 
     try:
-        # Search by map number
-        results, _ = search_fairfax_map_number(
-            map_number=map_number,
-            session=session,
-        )
+        # Route to appropriate county scraper
+        if county == "fairfax-va":
+            results, _ = search_fairfax_map_number(
+                map_number=map_number,
+                session=session,
+            )
+        else:
+            raise HTTPException(
+                status_code=501,
+                detail=f"{county_info['name']} map search not yet implemented"
+            )
 
         if not results:
             raise HTTPException(
@@ -338,6 +370,16 @@ async def search_by_map_number(map_number: str):
             status_code=500,
             detail=f"Unexpected error during search: {str(exc)}"
         )
+
+
+@app.get("/search/map/{map_number}")
+async def search_by_map_number_legacy(map_number: str):
+    """
+    Legacy endpoint: Search by map number (defaults to Fairfax County, VA).
+
+    For backward compatibility. New code should use /search/map/{county}/{map_number}
+    """
+    return await search_by_map_number(county="fairfax-va", map_number=map_number)
 
 
 @app.get("/tax-summary", response_model=TaxSummaryResponse)

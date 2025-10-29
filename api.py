@@ -26,6 +26,7 @@ import requests
 
 from icare_address_search import (
     search_fairfax_address,
+    search_fairfax_map_number,
     fetch_fairfax_tax_summary,
     parse_currency,
     format_currency,
@@ -166,6 +167,100 @@ async def search_address(request: AddressSearchRequest):
             count=len(results),
             results=results,
         )
+
+    except requests.RequestException as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Search request failed: {str(exc)}"
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error during search: {str(exc)}"
+        )
+
+
+@app.get("/search/map/{map_number}")
+async def search_by_map_number(map_number: str):
+    """
+    Search for a property by map number and return property details with tax information.
+
+    This endpoint searches for a specific property using its Fairfax County map number
+    (e.g., "0583 01 0001") and returns both the property details and tax summary in one call.
+    """
+    session = requests.Session()
+
+    try:
+        # Search by map number
+        results, _ = search_fairfax_map_number(
+            map_number=map_number,
+            session=session,
+        )
+
+        if not results:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No property found with map number: {map_number}"
+            )
+
+        # Get the first result (should be exact match)
+        property_data = results[0]
+        detail_url = property_data.get("DetailURL")
+
+        if not detail_url:
+            return {
+                "success": True,
+                "property": property_data,
+                "tax_summary": None,
+                "message": "Property found but no detail URL available"
+            }
+
+        # Fetch tax summary
+        try:
+            tax_summary = fetch_fairfax_tax_summary(session, detail_url)
+
+            # Convert tax summary for JSON
+            periods = []
+            for period in tax_summary.get("periods", []):
+                periods.append({
+                    "year": period["year"],
+                    "label": period["label"],
+                    "amount_paid": period["amount_paid_display"],
+                    "balance_due": period["balance_due_display"],
+                    "amount_paid_decimal": float(period["amount_paid"]),
+                    "balance_due_decimal": float(period["balance_due"]),
+                })
+
+            total = tax_summary.get("total", {})
+            total_data = {
+                "year": total.get("year", "Total"),
+                "label": total.get("label", ""),
+                "amount_paid": total.get("amount_paid_display", "$0.00"),
+                "balance_due": total.get("balance_due_display", "$0.00"),
+                "amount_paid_decimal": float(total.get("amount_paid", 0)),
+                "balance_due_decimal": float(total.get("balance_due", 0)),
+            }
+
+            return {
+                "success": True,
+                "property": property_data,
+                "tax_summary": {
+                    "title": tax_summary.get("title", "Tax Summary"),
+                    "stub_number": tax_summary.get("stub_number"),
+                    "tax_year_code": tax_summary.get("tax_year_code", ""),
+                    "periods": periods,
+                    "total": total_data,
+                }
+            }
+
+        except (requests.RequestException, ValueError) as exc:
+            # Return property data even if tax summary fails
+            return {
+                "success": True,
+                "property": property_data,
+                "tax_summary": None,
+                "message": f"Property found but tax summary unavailable: {str(exc)}"
+            }
 
     except requests.RequestException as exc:
         raise HTTPException(

@@ -19,6 +19,7 @@ import requests
 from bs4 import BeautifulSoup
 
 SEARCH_URL = "https://icare.fairfaxcounty.gov/ffxcare/search/CommonSearch.aspx?mode=ADDRESS"
+MAP_NUMBER_SEARCH_URL = "https://icare.fairfaxcounty.gov/ffxcare/search/CommonSearch.aspx?mode=PARID"
 
 
 def collect_form_fields(html: str) -> Dict[str, str]:
@@ -110,6 +111,45 @@ def search_fairfax_address(
     )
 
     response = session.post(SEARCH_URL, data=payload, timeout=30)
+    response.raise_for_status()
+    return parse_results_table(response.text), response.text
+
+
+def search_fairfax_map_number(
+    map_number: str,
+    session: requests.Session | None = None,
+) -> Tuple[List[Dict[str, str]], str]:
+    """Perform a map number search and return parsed rows plus the raw HTML.
+
+    Map number format: "0812 03 0026" or "0812030026" (will be normalized to "0812 03 0026")
+    """
+    session = session or requests.Session()
+
+    # Normalize map number - remove all spaces
+    map_clean = map_number.replace(" ", "")
+
+    # If we have exactly 10 digits, format it as: XXXX XX XXXX (single spaces)
+    if len(map_clean) == 10 and map_clean.isdigit():
+        map_formatted = f"{map_clean[0:4]} {map_clean[4:6]} {map_clean[6:10]}"
+    else:
+        # Use as-is if it doesn't match expected format
+        map_formatted = map_number
+
+    initial = session.get(MAP_NUMBER_SEARCH_URL, timeout=30)
+    initial.raise_for_status()
+
+    payload = collect_form_fields(initial.text)
+    payload.update(
+        {
+            "inpParid": map_formatted,
+            "hdAction": "Search",
+            "PageNum": "1",
+            "PageSize": "15",
+            "selPageSize": "15",
+        }
+    )
+
+    response = session.post(MAP_NUMBER_SEARCH_URL, data=payload, timeout=30)
     response.raise_for_status()
     return parse_results_table(response.text), response.text
 

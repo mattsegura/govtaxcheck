@@ -1,9 +1,15 @@
 """
-FastAPI application for Fairfax County property and tax searches.
+FastAPI application for multi-county property and tax searches.
+
+Supports multiple counties:
+- Fairfax County, VA
+- Mecklenburg County, NC (coming soon)
 
 Endpoints:
+- GET /counties - List available counties
 - POST /search/address - Search properties by address
-- GET /property/{detail_url:path}/tax-summary - Get tax summary for a property
+- GET /search/map/{map_number} - Search by map number
+- GET /tax-summary - Get tax summary for a property
 
 Install dependencies:
     pip install fastapi uvicorn requests beautifulsoup4
@@ -33,9 +39,9 @@ from icare_address_search import (
 )
 
 app = FastAPI(
-    title="Fairfax County Property Search API",
-    description="API for searching properties and retrieving tax information from Fairfax County iCare",
-    version="1.0.0",
+    title="Multi-County Property Search API",
+    description="API for searching properties and retrieving tax information from multiple counties",
+    version="2.0.0",
 )
 
 # Add CORS middleware to allow requests from web browsers
@@ -48,9 +54,32 @@ app.add_middleware(
 )
 
 
+# County Configuration
+SUPPORTED_COUNTIES = {
+    "fairfax-va": {
+        "id": "fairfax-va",
+        "name": "Fairfax County",
+        "state": "Virginia",
+        "state_abbr": "VA",
+        "features": ["address_search", "map_search", "tax_summary"],
+        "description": "Fairfax County, Virginia property and tax search"
+    },
+    "mecklenburg-nc": {
+        "id": "mecklenburg-nc",
+        "name": "Mecklenburg County",
+        "state": "North Carolina",
+        "state_abbr": "NC",
+        "features": ["parcel_search"],
+        "description": "Mecklenburg County, North Carolina property search via parcel ID (coming soon)",
+        "status": "coming_soon"
+    }
+}
+
+
 # Request/Response Models
 class AddressSearchRequest(BaseModel):
     """Request model for address search."""
+    county: str = Field(default="fairfax-va", description="County ID (e.g., 'fairfax-va', 'mecklenburg-nc')")
     number: str = Field(default="", description="Street number")
     street: str = Field(..., description="Street name (required)")
     suffix: str = Field(default="", description="Street suffix (e.g., RD, DR)")
@@ -131,36 +160,73 @@ def decimal_to_dict(data: Dict[str, object]) -> Dict:
 async def root():
     """Root endpoint with API information."""
     return {
-        "message": "Fairfax County Property Search API",
-        "version": "1.0.0",
+        "message": "Multi-County Property Search API",
+        "version": "2.0.0",
+        "counties": len(SUPPORTED_COUNTIES),
         "endpoints": {
+            "counties": "GET /counties",
             "search": "POST /search/address",
+            "map_search": "GET /search/map/{map_number}",
             "tax_summary": "GET /tax-summary",
         },
+    }
+
+
+@app.get("/counties")
+async def get_counties():
+    """Get list of supported counties."""
+    return {
+        "success": True,
+        "count": len(SUPPORTED_COUNTIES),
+        "counties": list(SUPPORTED_COUNTIES.values())
     }
 
 
 @app.post("/search/address", response_model=SearchResponse)
 async def search_address(request: AddressSearchRequest):
     """
-    Search for properties by address in Fairfax County.
+    Search for properties by address.
 
+    Supports multiple counties. Specify county in request body.
     Returns a list of matching properties with their details and tax information URLs.
     """
     if not request.street:
         raise HTTPException(status_code=400, detail="Street name is required")
 
+    # Validate county
+    if request.county not in SUPPORTED_COUNTIES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"County '{request.county}' not supported. Available: {list(SUPPORTED_COUNTIES.keys())}"
+        )
+
+    county_info = SUPPORTED_COUNTIES[request.county]
+
+    # Check if county has search implemented
+    if county_info.get("status") == "coming_soon":
+        raise HTTPException(
+            status_code=501,
+            detail=f"{county_info['name']} search is coming soon"
+        )
+
     session = requests.Session()
 
     try:
-        results, _ = search_fairfax_address(
-            number=request.number,
-            street=request.street.upper(),
-            suffix=request.suffix.upper(),
-            unit=request.unit,
-            page_size=request.page_size,
-            session=session,
-        )
+        # Route to appropriate county scraper
+        if request.county == "fairfax-va":
+            results, _ = search_fairfax_address(
+                number=request.number,
+                street=request.street.upper(),
+                suffix=request.suffix.upper(),
+                unit=request.unit,
+                page_size=request.page_size,
+                session=session,
+            )
+        else:
+            raise HTTPException(
+                status_code=501,
+                detail=f"{county_info['name']} search not yet implemented"
+            )
 
         return SearchResponse(
             success=True,

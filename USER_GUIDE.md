@@ -1,6 +1,11 @@
-# User Guide - Fairfax County Property Search API
+# User Guide - Multi-County Property Search API
 
-Complete guide for using the Fairfax County Property Search API to find property information and tax details.
+Complete guide for using the Multi-County Property Search API to find property information and tax details across multiple counties.
+
+**Supported Counties:**
+- Fairfax County, Virginia (Map Number search)
+- Travis County, Texas (Property ID search)
+- Mecklenburg County, NC (Coming soon)
 
 **API Base URL:** https://govtaxcheck.onrender.com
 

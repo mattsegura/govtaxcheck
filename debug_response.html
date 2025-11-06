@@ -1,0 +1,1381 @@
+<!DOCTYPE HTML>
+<html lang='en-US' XMLNS:MPC><head runat='server'>
+	                            <title>Fairfax County - Map Number Search</title>
+                                <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+                                <meta http-equiv='X-UA-Compatible' content='IE=9' />
+	                            <meta http-equiv='Keywords' content='CAMA, Assessment Administration, Tax'>
+	                            <meta http-equiv='Description' content='iasWorld'>
+	                            <meta name='Copyright' content='Tyler Technologies Inc, Akanda Solutions, LLC'> 
+                                <meta name='format-detection' content='telephone=no'>
+                                <link rel='icon' href='https://icare.fairfaxcounty.gov/ffxcarefavicon.ico' type='image/x-icon'>
+                                <link rel='shortcut icon' href='https://icare.fairfaxcounty.gov/ffxcarefavicon.ico' type='image/x-icon'>
+                                <meta http-equiv='pragma' content='no-cache'>
+                            </head><link rel='stylesheet' href='https://icare.fairfaxcounty.gov/ffxcare/styles/font-awesome.min.css' type='text/css'><link rel='stylesheet' href='https://icare.fairfaxcounty.gov/ffxcare/styles/styles.css' type='text/css'><link rel='stylesheet' href='https://icare.fairfaxcounty.gov/ffxcare/styles/custom/override-FFX.css' type='text/css'><body id='thebody' class='normalpage' ><div id='pagewrapper'><div id='divSMaint' style='display:none;border-bottom:2px solid red;width:780'><table role='presentation' cellpadding='0' cellspacing='0' width=780><tr id='trSMaint' class='MessageBar' style='height:21px;vertical-align:middle;'><td id='tdSMaint'>&nbsp;The System is currently unavailable due to maintenance.  Please check again later.</td><td id='tdTimer' align='right'></td><td align="right" valign="middle" onmouseout="ChangeImage('out')" onmouseover="ChangeImage('over')"><img id="CloseMsgBar" src="../images/icons/Set1/closeicon-normal.gif" height="14px" alt="Hide Bar" style="vertical-align:middle; border:solid 1px white; cursor:pointer" onclick="HideBar()"  />&nbsp;</td></tr></table></div><script type='text/javascript' language='javascript'>function HideBar() { document.getElementById('divSMaint').style.display='none';SoapInvokeService(WS_ACCESS_MANAGER, 'HideBar', null, false)}function ChangeImage(el) { var img = document.getElementById('CloseMsgBar'); if (el == 'out') img.src = img.src.replace('closeicon-mouseover.gif', 'closeicon-normal.gif');  else img.src = img.src.replace('closeicon-normal.gif', 'closeicon-mouseover.gif'); }</script><input type='hidden' id='hdDefHelp' value='0'><input type='hidden' id='hdThisFile' value='search/commonsearch.aspx'><div id='outerheader'><div id='middleheader'>
+
+<header>
+    <div id='header'>
+        <div class='sitelogocontainer'>
+            <a href="http://www.fairfaxcounty.gov" id="aIASWLink" tabindex="1" target="_blank" title="Click&#32;here&#32;to&#32;visit&#32;home&#32;page"><div class="sitelogo"></div></a>
+        </div>
+        <div class="HeaderSiteTitle"></div>
+        <div id='rightsection' class='HeaderLinks'>
+            <span id="RoleValue" class="HeaderLinks">
+                    </span><span id="lbRole"></span>
+            
+            <span id="contactUs"><A id="linkContactUs" class="HeaderLinks" href="https://icare.fairfaxcounty.gov/ffxcare/forms/contactushost.aspx" target="_blank" tabindex="1" >CONTACT US</A>&nbsp;&nbsp;|&nbsp;&nbsp; </span>
+            <span id="lbHelp"><a class="Headerlinks Help" href="javascript:showHelp('')"
+                class='HeaderLinks' tabindex="1">
+                <img src='../images/common/icons/050.png' alt='Help' /></a> &nbsp;&nbsp; </span>
+            
+        </div>
+    </div>
+</header>
+
+<nav>
+       <div id='topmenu'><ul><li class='unsel'><a href='../forms/externallink.aspx?mode=http://www.fairfaxcounty.gov' target='' tabindex='1'><span>&nbsp</span></a></li><li class='unsel'><a href='../forms/externallink.aspx?mode=http://www.fairfaxcounty.gov/residents' target='' tabindex='1'><span>Residents</span></a></li><li class='unsel'><a href='../forms/externallink.aspx?mode=https://www.fairfaxcounty.gov/business' target='' tabindex='1'><span>Business</span></a></li><li class='unsel'><a href='../forms/externallink.aspx?mode=http://www.fairfaxcounty.gov/government' target='' tabindex='1'><span>Government</span></a></li><li class='unsel'><a href='../forms/externallink.aspx?mode=http://www.fairfaxcounty.gov/services' target='' tabindex='1'><span>Services</span></a></li><li class='unsel'><a href='../forms/externallink.aspx?mode=http://www.fairfaxcounty.gov/connect' target='' tabindex='1'><span>Connect</span></a></li><li class='sel'><a href='../search/commonsearch.aspx?mode=address' target='' tabindex='1'><span>Property Search</span></a></li></ul></div>
+       <div id='secondarytopmenu'><ul><li class='unsel'><a href='../search/commonsearch.aspx?mode=address' target='' tabindex='1'><span>Address</span></a></li><li class='sel'><a href='../search/commonsearch.aspx?mode=parid' target='' tabindex='1'><span>Map Number</span></a></li><li class='unsel'><a href='../maps/mapadv.aspx' target='' tabindex='1'><span>Map Search</span></a></li><li class='unsel'><a href='../main/home.aspx' target='' tabindex='1'><span>Search Home</span></a></li></ul></div>
+   </nav>
+
+<script type="text/javascript" src="../script/soap.js?240723083808"></script>
+<script type="text/javascript" src="../script/Common.js?240723083807"></script>
+<script type="text/javascript">
+
+    function HeaderClick(link) {
+        var par = window.parent;
+        if (par == window) return true;
+        var op = par.opener;
+        if (op == null) return true;
+        if (op.HeaderClick == null) return true;
+        var id = link.id;
+        var el = op.document.getElementById(id);
+        if (el == null) return true;
+        if (!confirm("This command will close the current window.\nDo you want to proceed?")) return false;
+
+        if (document.createEvent) {
+            var evt = document.createEvent('MouseEvents');
+            evt.initEvent('click', true, false);
+            el.dispatchEvent(evt);
+        } else if (typeof el.onclick == 'function') {
+            el.click();
+        }
+
+        par.close();
+        op.focus();
+        return false;
+    }
+
+    function SetMyHome(url) {
+        var DLG_SETMYHOME = "center:yes; dialogHeight:180px; dialogWidth:240px; help:no; resizable:no; status:no; title:no";
+        window.showModalDialog('../Forms/SetMyHome.aspx?url=' + url, null, DLG_SETMYHOME);
+    }
+
+
+    function ShowSimpleHelp(url) {
+        var DLG_POPUP = "scrollbar= yes, height=600, Width=800, resizable=yes, status=no, titlebar=no";
+        if (url.indexOf("?") > 0) {
+            url += "&";
+        } else {
+            url += "?";
+        }
+        window.open(url, null, DLG_POPUP);
+    }
+
+    function ViewCompleted() {
+        var url = "../Maintain/ReportSpool.aspx?simple=1&runningJobs=0&batchJobs=2";
+        window.open(url, "Reports", "status=1, toolbar=0, height=650px, width=1000px, resizable=1, scrollbars=yes");
+    }
+
+    function PopupWindow2(url) {
+        var DLG_POPUP = "dialogLeft:0; dialogTop: 0; edge: sunken; scroll: yes; center:yes; dialogHeight:750; dialogWidth:1028; help:no; resizable:yes; status:no; title:no";
+        if (url.indexOf("?") > 0) {
+            url += "&";
+        } else {
+            url += "?";
+        }
+        url += "frameset=1";
+        window.showModalDialog(url, null, DLG_POPUP);
+    }
+
+    var gLastPopup = parseInt(Math.random() * 10);
+
+    function PopupWindow(url, noToolbar, name) {
+        var win = null;
+
+        if (name == null)
+            name = "";
+        else
+            name = name.replace(' ', "");
+
+        if (win == null) {
+            if (name == null || name.length == 0) name = "popup" + (gLastPopup++ % 10);
+            var params;
+            if (noToolbar) {
+                params = "fullscreen=no, titlebar=no, location=no, menubar=no, toolbar=no, resizable=yes, scrollbars=yes, status=yes, titlebar=yes";
+            } else {
+                params = null;
+            }
+            win = window.open(url, name, params);
+        }
+        return win;
+    }
+
+    function setRole(val, form) {
+        var url = window.location.href;
+        url = url.replace("#", "");
+        var i = url.indexOf("&");
+        if (i != -1) {
+            url = url.substr(0, i);
+        }
+        var pars = SoapBuildInputParam("SelectedRole", val);
+        pars += SoapBuildInputParam("URL", url);
+        var res = SoapInvokeService(WS_PUBLIC, "AssignSelectedRole", pars);
+        if (res == -1) {
+            location.href = "../Main/Home.aspx";
+        }
+        else {
+            location.reload();
+        }
+    }
+</script>
+</div></div><div id='wrapper' class='center'><section><div id='bodyarea' >
+
+
+<link rel="stylesheet" href="../styles/jquery-ui-1.13.2-themes-smoothness.css" />
+<script type="text/javascript" src="../script/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="../script/jquery-ui-1.13.2.js"></script>
+
+
+
+
+<body onload="Init()">
+ <form name="frmMain" method="post" action="./CommonSearch.aspx?mode=PARID" id="frmMain" autocomplete="on" onsubmit="return&#32;frmMainSubmit(&#39;Search&#39;)">
+<input type="hidden" name="ScriptManager1_TSM" id="ScriptManager1_TSM" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="hoWzZducUq0L5T8OalS9ANKiQMYp0oxd0GgkzTteeto7pLDMsVuziziRO5JbOEascpGtjNkTO170SjdCjaD6PcTXNno7qg167ZtBmc/TdvOp7eB46UqGVMPJXlUtMI4iiG+aMHgoTKly7Sod8vHrxYTR5dIZaIR20eYlrsEM2oZATKFld5HaLtqRQReg/SrefchfzuFz1mJeXX03vncODPCOVnzXtpG5gJaWHfMWrdc0AGN4peLtMGt3KFZSD0E1BDVToXdQvRSpjAvZZjTBMhcwSxUVu9QwUszFCc4cAypr5HLGT1FAQXRqbzRfELw/mOAV3wvJYMe1ulG3y2ePkt8OTQLp5kxi9pcRev1pVvBNi9YXEul3t53OIuJFdjDscWve3k+H6BZgPwVaJJcCZAc9zRaNS51+cMf4ZTPArkyrOyyaMJ/ixGs1oSHokcmRjGrZXOVwdmM/L2IU6amhJK+2NnXVUVG75+vXZHbrCZY5Tj4qXk0iMWJt5lE2XThopS7vtQ3DhYg1m4J6zarX8Xkshii31bzTWkod/egq6xakwVMkODjDFgarBefDrFkWHG6lLsDeBOh0RfVSgkWQOAzobN/7/l8Ic6PHXAdLh75+5vYTI4WHCC2BtRv3d7tXVbkh6Z5IK8TIFTReQh9FVk1PQDcRNE+nvs0RovjYvCDk8fev9VuUUJl9tXpUYpDf25CwlLPmp4uxflIh2KDP76/H0drpJm/8DdXYZ13AyygB6VkRm3RH0R3aOCtYVttVjkeQNU7Me+cSwg4a+3HZ9YRObtS/PZChZuhn/UXwPN9FdAybJatqMbt6tVrqPubM81Fa068PapbKDUHCbM2c5s+Tet/yzSA1Dyb4ayk0rNBWqkuXi3k5U6EcFvgBZ0F4WykLuuSJIuexdB784yky+vbI4I7H3TTELMgTypHVqOfiOT609ap1X6Q/H/HTVSiaDF7rSxKxjYlHQrVVpvJUTlW1fV/ekcFEUuwCjkM1nPG+oX+T/ductgAuNrHnOsEjxM9kIP68BYj9jk26xnx9PFPcEATIdqnrKVPFdGfCjtnEYfOVLT6KEXacIFGBNXmYtEjsylLgFf0hg93Q4/rzyL3X510SyCxxeLXyBEyTc4uYKOxwnqj6yEG3vlSYDlGAwrbCHd3k5sSoXfpcNmj6mw==" />
+
+<script language="javascript">
+			var mode = "PARID";
+			</script><link class='Telerik_stylesheet' type='text/css' rel='stylesheet' href='/ffxcare/WebResource.axd?d=QKX1AO1vX8ebWKfbb4eOTGLWewn1R0dhDLnFg8Gp8IO-7TVpvp-XVt18Qpj4py7rTzwj1YbaQsolCYTz61ERhzKOrv3rv9y_Q0OD6XHk8fOPr1XWPkl-k7Tt0Y_fDKzu0&amp;t=638573205426321270' /><link class='Telerik_stylesheet' type='text/css' rel='stylesheet' href='/ffxcare/WebResource.axd?d=abSXP-RgNuAsfhlSYpnpbKDDYLs-Lv7DwXu9IpxpS_UCF4ecTTfR8Fs6h1yVm_JQ8igwi15a_BW6C-3kmWKutKQ6j07nWgke1SWETEbpP-aR5VswmrT8MTSP8TqZBCO8b0drf_XpW7L4dB5al73icQ2&amp;t=638573205426321270' />
+<script src="/ffxcare/Telerik.Web.UI.WebResource.axd?_TSM_HiddenField_=ScriptManager1_TSM&amp;compress=1&amp;_TSM_CombinedScripts_=%3b%3bAjaxControlToolkit%2c%20Version%3d4.1.50731.0%2c%20Culture%3dneutral%2c%20PublicKeyToken%3d28f01b0e84b6d53e%3aen-US%3af8fb2a65-e23a-483b-b20e-6db6ef539a22%3aea597d4b%3bTelerik.Web.UI%2c%20Version%3d2022.2.622.45%2c%20Culture%3dneutral%2c%20PublicKeyToken%3d121fae78165ba3d4%3aen-US%3a632d5171-8657-40d1-a04f-15afaaf31752%3a16e4e7cd%3af7645509%3a24ee1bba%3ac128760b%3a874f8ea2%3ab2e06756%3a92fe8ea0%3af46195d3%3a4877f69a%3a33715776%3afa31b949%3a19620875%3a490a9d4e" type="text/javascript"></script>
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="BDCAC3CA" />
+<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="kShM7Rt77H9nIIG3s5WxdPeSiEBtISF0O2/UQLAq6OhBWFrRLVlxLPkoMk5UpvXlEt7oB7Ib/2U1MTSFGFO3cby36nmvsADimqIBCfBTCaVPFGbcT5V/XE0tHxx+v731tIuYTWHNdTjUDuYdK5pflmz6YlvTI2+HteGRIUg/YYxaYEX8loR8Di6Sw/wNfw2urAtnVvK57KEinC04c8HfrRHbRTmnDT3EhARmn40J6xQEecrhrD3+H/3NKHc6nK4D2JWf1HZtXYt2xw6VH5OqOLyIWsGjcxjDHQsWjqbQTcDX/zZfvLi/Eyth20Ez61tbwWvxaeEDvAPOk3tl9cDVKQ==" />
+     
+        <style type="text/css">
+            div.infoBox
+            {
+                width: 800px;
+                margin-right: 15px;
+                vertical-align: top;
+            }
+            #ContentTemplateZone, #NavigateUrlZone
+            {
+                height: 600px;
+            }
+            .contText, .contButton
+            {
+                margin: 0;
+                padding: 0 0 10px 5px;
+                font-size: 12px;
+            }
+            .RadWindow_Black .contText
+            {
+                color: #fff;
+            }
+        </style>
+    
+
+     
+<input name="PageNum" type="hidden" id="PageNum" value="1" />
+<input type="hidden" id="SortBy" name="SortBy" value="PARID">
+<input type="hidden" id="SortDir" name="SortDir" value=" asc">
+<input type="hidden" id="PageSize" name="PageSize" value="15">
+<input name="hdAction" type="hidden" id="hdAction" value="Search" />
+<input name="hdIndex" type="hidden" id="hdIndex" value="0" />
+<input type="hidden" id="sIndex" name="sIndex" value="-1">
+<input type="hidden" id="hdListType" name="hdListType" name="hdListType" value="PA">
+<input name="hdJur" type="hidden" id="hdJur" />
+<input name="hdSelectAllChecked" type="hidden" id="hdSelectAllChecked" />
+   
+
+<table align="center" role="presentation">
+<tr>
+<td>
+<div class='contentpanel'><div>
+	
+<table align="center" width="855" cellpadding="0" cellspacing="0" border="0" role="presentation">
+    <tr height="2">
+        <td width="100%"></td>
+    </tr>
+    <tr  height="2">
+        <td width="100%"></td>
+    </tr>
+<script type="text/javascript" language="javascript">
+var search_Params = new Array("inpParid");
+</script>
+<tr>
+    <td>
+        <table width="100%" border="0" role="presentation">
+            <tr>
+                <td width="26%" valign="top">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+	                    <tr>
+		                    <td class="SearchText">
+			                    Search by
+		                    </td>
+	                    </tr>
+	                    <tr>
+		                    <td class="SearchText">
+								<h1>
+									Map Number
+								</h1>
+		                    </td>
+	                    </tr>
+                    </table>
+                </td>
+                <td rowspan="1" valign="middle">
+                </td>
+		        <td rowspan="1" valign="middle">
+			        <table cellpadding="2" cellspacing="2" width="100%" border="0" role="presentation">
+				        <tr>
+	                        <td nowrap id="parcelid-label" class="IndexLink" width="10%">
+		                        Map Number
+			                        <div class="required-asterisk">*</div>
+		                        
+	                        </td>
+	                        <td>
+		                        <input type="text" id="inpParid" name="inpParid" class="Input" size="30" maxLength="30"
+			                        value="0812 03 0026" onkeypress="clearAction(this)" aria-label="Map Number"/>
+	                        </td>	 
+                    	</tr>
+	                    <tr>
+		                    <td></td>
+		                    <td class="IndexLink">
+			                    Enter all or part of the number
+		                    </td>
+	                    </tr>
+	                </table>
+	            </td>
+	        </tr>
+	    </table>
+	 </td> 
+</tr>
+<input type="hidden" id="hdUseParcelMask" />
+<script type="text/javascript" src="../Script/Soap.js"></script>
+<script type="text/javascript" src="../Script/ParidControl.js"></script>
+<script type="text/javascript" src="../script/xapi.js"></script>
+
+
+
+
+
+<tr class="BannerTabsT" height="2"><td></td></tr>
+<tr id="optionsRowElement">
+	<td>
+		<table width="100%"  border="0" role="presentation">
+			<tr valign="middle">
+				<td class="SearchText" valign="middle" width="100" style="FONT-SIZE: 14px;">
+					<h2>
+						Options
+					</h2>
+				</td>
+				<td class="IndexLink" id="sortby-label" align="right" width="50" nowrap>Sort by:</td>
+				<td class="IndexLink">
+					<select style="height:21px; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px" id="selSortBy" name="selSortBy" onchange="changeOrder(this)" aria-labelledby="sortby-label">
+					<option value=OWNER>Owner</option><option value=FULLADD>Property Address</option><option value=SALEDT>Last Sale</option><option value=PARID selected>Map #</option>
+					</select>&nbsp;
+					<select style="height:21px; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px" id="selSortDir" name="selSortDir" onchange="changeDir(this)" aria-label="Sort by Direction">
+						<option value=" asc">Ascending</option>
+						<option value=" desc">Descending</option>
+					</select>
+				</td>
+				<td class="IndexLink" nowrap>
+				
+					<label for="selPageSize">Results/page:</label>
+					<select style="height:21px; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px" id="selPageSize" name="selPageSize">
+					<option value=15>15</option><option value=20>20</option><option value=25>25</option><option value=30>30</option><option value=50>50</option>
+					</select>
+				
+				</td>
+				<td class="IndexLink" align="right">
+<input name="searchOptions$hdBeta" type="hidden" id="searchOptions_hdBeta" />
+
+
+<button type="submit" id="btSearch" name="btSearch" class="Btn BtnBlue" onclick="submitPage()" title="" style="clear:both; " >Search</button>			
+	
+	
+        </td>
+			</tr>
+      
+      <tr class="BannerTabsT" height="2"><td colspan="5"></td></tr>
+      
+		</table>
+	</td>
+</tr>
+
+<script>
+    function submitPage() {
+        
+        var _hdSelectAllChecked = document.getElementById("hdSelectAllChecked");
+        if (_hdSelectAllChecked) {
+            _hdSelectAllChecked.value = "false";        }
+      
+        //CLT-19155 Not needed, as the click event is firing now..
+        //document.forms[0].submit();
+    }
+</script>
+
+
+<tr>
+	<td>
+		<table width="100%" role="presentation">
+			<tr>
+			    
+				<td width="60%" align="center">
+					<div class="IndexLink"><div class="required-asterisk">*</div> required</div>
+				</td>
+				
+				<td class="IndexLink" align="right">
+					<b>Data Current as of&nbsp;</b>November  05, 2025</td>
+				
+			</tr>
+		</table>
+	</td>
+</tr>
+
+<tr height="2"><td></td></tr>
+<tr>
+	<td align="center">
+		
+	</td>
+</tr>
+</table>
+
+<table align="center" width="100%" border="0" role="presentation">
+	<tr>    	
+		<td valign="top" width="82%">
+			<table border="0" cellspacing=0 cellpadding=0 align="center" width="100%" role="presentation">
+				<tr>
+					<td align="center">
+					</td>
+				</tr>
+				<tr>
+					<td align="center">
+						
+<table id="Table1" cellspacing="1" cellpadding="1" width="450" border="0">
+	<tr>
+		<td>
+			<div id="phInstructions_dvInstr">
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div id="phInstructions_dvExampl">
+			</div>
+		</td>
+	</tr>
+    
+</table>
+
+					</td>
+				</tr>
+				<tr>
+					<td align="center">			          			
+            
+
+
+<script>
+    var $j = jQuery.noConflict();
+
+    $j(document).ready(function () {   
+
+        //Condo_Subdivision search logic
+        var loc = $j(location).attr('href');
+        var searchType = loc.split('=')[1];
+        var searchString = "";
+
+        var isCondoSearch = searchType.toUpperCase() === 'CONDO_SUBDIV';
+
+        if (isCondoSearch)
+        {      
+            replaceRowOnClick();
+
+            hideSearchResultsElem();
+        }
+        
+        function hideSearchResultsElem()
+        {   
+            $j('.WidgetBar').hide();
+        }   
+
+        function replaceRowOnClick()
+        {
+            $j(".SearchResults").each(function () {
+
+                var firstTd = $j(this).find("td:first");
+                firstTd.attr('style','border: 1px solid #999;');
+
+                searchString = firstTd.get(0).innerText;
+                searchString = encodeURIComponent(searchString);
+
+                var pageSize = $j('#PageSize').get(0).value;
+                                
+                $j(this).attr("onclick", "javascript:selectSearchRow('commonsearch.aspx?mode=legaldesc&param1=" + searchString
+                                                                      + "&selPageSize=" + pageSize + "&searchimmediate=1')");
+            });
+        }
+    });
+ 
+
+</script>
+
+
+
+<center>
+
+	<!-- results -->
+	
+	<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+		<tr style="font-face:Arial, Helvetica, sans-serif;font-size:12px">
+		    <td align="left"><span class="SearchText">Results</span>&nbsp;&nbsp;&nbsp;</td>
+        
+			<td align="left">
+				
+        <font face="arial" color="darkred"><b>
+					Click rows to view property details
+				</b></font>
+			</td>			
+			<td align="right">
+				Displaying<font face="Arial">
+        <b>
+						1&nbsp;-&nbsp;2</b> 
+<span id="ml">of</span> <b>
+						2
+					</b></font>
+			</td>
+		</tr>
+	</table>
+	
+	<table id="searchResults" tabindex="0" align="center" width="100%" border="0" bordercolor="gray" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+		<thead><tr height="23"><a><th scope='col' class='ResultListTitleColor' style='border: 1px solid #999; cursor: pointer;' align='left' tabindex='0' title='Sort by Owner' aria-label='Sort by Owner' onmouseout="this.style.textDecoration='';this.className='ResultListTitleColor'; this.style.backgroundColor='';" onmouseover="this.style.textDecoration=''; this.className='ResultListTitleColor'; this.style.backgroundColor='#dfe8f6';" onfocus++="this.style.textDecoration='';this.className='ResultListTitleColor'; this.style.backgroundColor='';" onfocusout="this.style.textDecoration=''; this.className='ResultListTitleColor'; this.style.backgroundColor='#dfe8f6';" onclick="SortResults('OWNER');" onkeyup="javascript:if(event.code == 'Space'){SortResults('OWNER');}"><div style='margin-left:3px;'>Owner</div></th><th scope='col' class='ResultListTitleColor' style='border: 1px solid #999; cursor: pointer;' align='left' tabindex='0' title='Sort by Property Address' aria-label='Sort by Property Address' onmouseout="this.style.textDecoration='';this.className='ResultListTitleColor'; this.style.backgroundColor='';" onmouseover="this.style.textDecoration=''; this.className='ResultListTitleColor'; this.style.backgroundColor='#dfe8f6';" onfocus++="this.style.textDecoration='';this.className='ResultListTitleColor'; this.style.backgroundColor='';" onfocusout="this.style.textDecoration=''; this.className='ResultListTitleColor'; this.style.backgroundColor='#dfe8f6';" onclick="SortResults('FULLADD');" onkeyup="javascript:if(event.code == 'Space'){SortResults('FULLADD');}"><div style='margin-left:3px;'>Property Address</div></th><th scope='col' class='ResultListTitleColor' style='border: 1px solid #999; cursor: pointer;' align='left' tabindex='0' title='Sort by Last Sale' aria-label='Sort by Last Sale' onmouseout="this.style.textDecoration='';this.className='ResultListTitleColor'; this.style.backgroundColor='';" onmouseover="this.style.textDecoration=''; this.className='ResultListTitleColor'; this.style.backgroundColor='#dfe8f6';" onfocus++="this.style.textDecoration='';this.className='ResultListTitleColor'; this.style.backgroundColor='';" onfocusout="this.style.textDecoration=''; this.className='ResultListTitleColor'; this.style.backgroundColor='#dfe8f6';" onclick="SortResults('SALEDT');" onkeyup="javascript:if(event.code == 'Space'){SortResults('SALEDT');}"><div style='margin-left:3px;'>Last Sale</div></th><th scope='col' class='ResultListTitleColor' style='border: 1px solid #999; cursor: pointer;' align='left'></th><th scope='col' class='ResultListTitleColor' style='border: 1px solid #999; cursor: pointer;' align='left' tabindex='0' title='Sort by Map #' aria-label='Sort by Map #' onmouseout="this.style.textDecoration='';this.className='ResultListTitleColor'; this.style.backgroundColor='';" onmouseover="this.style.textDecoration=''; this.className='ResultListTitleColor'; this.style.backgroundColor='#dfe8f6';" onfocus++="this.style.textDecoration='';this.className='ResultListTitleColor'; this.style.backgroundColor='';" onfocusout="this.style.textDecoration=''; this.className='ResultListTitleColor'; this.style.backgroundColor='#dfe8f6';" onclick="SortResults('PARID');" onkeyup="javascript:if(event.code == 'Space'){SortResults('PARID');}"><div style='margin-left:3px;'>Map #&#9650</div></th></tr><tr><td height='0' colspan='5' style='font-size: 0px; display: none;'>&nbsp;</td></tr></thead>
+		<tbody><tr aria height='23' tabindex='0' class='SearchResults' bgcolor='White' onmouseout="if(this.style.backgroundColor != '#dfe8f6')  {this.style.textDecoration='';this.className='SearchResults'; this.style.backgroundColor='';}" onmouseover=" if(this.style.backgroundColor != '#dfe8f6'){this.style.textDecoration=''; this.className='SearchResults'; this.style.backgroundColor='#efefef';}" onfocusout="if(this.style.backgroundColor != '#dfe8f6')  {this.style.textDecoration='';this.className='SearchResults'; this.style.backgroundColor='';}" onfocus=" if(this.style.backgroundColor != '#dfe8f6'){this.style.textDecoration=''; this.className='SearchResults'; this.style.backgroundColor='#efefef';}" style='cursor: pointer' title='Click for details' onclick="javascript:selectSearchRow('../Datalets/Datalet.aspx?sIndex=0&idx=1')" onkeyup="javascript:if(event.code == 'Space'){selectSearchRow('../Datalets/Datalet.aspx?sIndex=0&idx=1')}"><td style='border: 1px solid #999;'  align='left' width='240'><div style='margin-left:3px;'>TSENTAS GEORGE C TR</div></td><td style='border: 1px solid #999;'  align='left' width='280'><div style='margin-left:3px;'>5520 OAKWOOD RD </div></td><td style='border: 1px solid #999;'  align='left' width='120'><div style='margin-left:3px;'>DEC/27/2010</div></td><td class='NewLink' style='border: 1px solid #999; padding-left:3px; padding-right:3px;' title='Neighborhood Search'><img src='../images/new/Parcel.png?130925121605' alt='Neighborhood Search' tabindex='0' onkeyup="javascript:if(event.code == 'Space'){selectSearchRow('NbhdSearch.aspx?pin=0812 03  0026&jur=129&taxyr=2026&ownsql=0&sIndex=0&idx=1');event.cancelBubble=true;return false}" onclick="selectSearchRow('NbhdSearch.aspx?pin=0812 03  0026&jur=129&taxyr=2026&ownsql=0&sIndex=0&idx=1');event.cancelBubble=true;return false"></td><td style='border: 1px solid #999;'  align='left' width='160'><div style='margin-left:3px;'>0812 03  0026</div></td></a></tr><tr aria height='23' tabindex='0' class='SearchResults' bgcolor='fafafa' onmouseout="if(this.style.backgroundColor != '#dfe8f6')  {this.style.textDecoration='';this.className='SearchResults'; this.style.backgroundColor='';}" onmouseover=" if(this.style.backgroundColor != '#dfe8f6'){this.style.textDecoration=''; this.className='SearchResults'; this.style.backgroundColor='#efefef';}" onfocusout="if(this.style.backgroundColor != '#dfe8f6')  {this.style.textDecoration='';this.className='SearchResults'; this.style.backgroundColor='';}" onfocus=" if(this.style.backgroundColor != '#dfe8f6'){this.style.textDecoration=''; this.className='SearchResults'; this.style.backgroundColor='#efefef';}" style='cursor: pointer' title='Click for details' onclick="javascript:selectSearchRow('../Datalets/Datalet.aspx?sIndex=0&idx=2')" onkeyup="javascript:if(event.code == 'Space'){selectSearchRow('../Datalets/Datalet.aspx?sIndex=0&idx=2')}"><td style='border: 1px solid #999;'  align='left' width='240'><div style='margin-left:3px;'>WU CHAO QIU</div></td><td style='border: 1px solid #999;'  align='left' width='280'><div style='margin-left:3px;'>5516 OAKWOOD RD </div></td><td style='border: 1px solid #999;'  align='left' width='120'><div style='margin-left:3px;'>DEC/22/2010</div></td><td class='NewLink' style='border: 1px solid #999; padding-left:3px; padding-right:3px;' title='Neighborhood Search'><img src='../images/new/Parcel.png?130925121605' alt='Neighborhood Search' tabindex='0' onkeyup="javascript:if(event.code == 'Space'){selectSearchRow('NbhdSearch.aspx?pin=0812 03  0026A&jur=129&taxyr=2026&ownsql=0&sIndex=0&idx=2');event.cancelBubble=true;return false}" onclick="selectSearchRow('NbhdSearch.aspx?pin=0812 03  0026A&jur=129&taxyr=2026&ownsql=0&sIndex=0&idx=2');event.cancelBubble=true;return false"></td><td style='border: 1px solid #999;'  align='left' width='160'><div style='margin-left:3px;'>0812 03  0026A</div></td></a></tr></tbody>
+	</table>
+	
+	
+	<!-- page navigator -->
+	<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+		
+        <tr valign="middle">
+			<td align="left">
+      <!-- VS Design mode can auto insert extra symbols braking the code below! Never switch to design view! -->			
+				
+                <a href="#" onclick="printSearch()"
+				" title="Show this page in a printer friendly version"><img style="vertical-align:bottom;" src='../images/new/print.png' alt="Open printable version" border="no"><font class="RightLinkFont2">
+				<span id="Span1">Printable Version</span> </font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                
+				
+      </td>
+			<td align="right" nowrap>
+				<font size="3" face="arial">
+<span id="ml">Results Page</span>: </font>&nbsp;&nbsp; 
+<font face="Arial" size="3" color="blue">
+					<font color=darkred><b>[1]</b></font>&nbsp;
+				</font>
+			</td>
+		</tr>
+        
+		
+	</table>
+</center>
+
+<input type="hidden" id="hdLink" name="hdLink" value="">
+<input name="AkaCfgResults$hdPins" type="hidden" id="AkaCfgResults_hdPins" />
+<script src="../script/soap.js"></script>
+<script>
+//window.onload = doOnLoad; 
+var searchType = "PARID";
+var printInPopup = "Y";
+var gSearchIndex = "0";
+var gSearch = "1";
+var pinCount = "0";
+var webTV	 = "False";
+
+var exclusive = "False";
+var applicationURL = "https://icare.fairfaxcounty.gov/ffxcare";
+
+function setChecked(selected)
+{
+	var chkarray = document.getElementsByName('chkPin');;
+	if (chkarray == null)
+	{
+		return;
+	}
+	var len = chkarray.length;
+	if (len == null)
+	{
+		chkarray = new Array(chkarray);
+		len = chkarray.length;
+	}
+	for (i = 0; i < len; i++)
+	{
+		var s = chkarray[i].value;
+		if (selected.search(s) != -1)
+		{
+			chkarray[i].checked = true;
+		}
+		else
+		{
+			chkarray[i].checked = false;
+		}
+	}
+}
+
+function selectSearchRow(par) {
+    //Removes recNav paging value from Session object even in the cases when the page is loaded from back-forward cache  
+    var removePageNumber = SoapInvokeService("../Search/Services/SessionServices.asmx", "ClearRecordNavigationPaging");
+	if (webTV == "False")
+	{
+		setSelection();
+	}
+    var url = par;
+    if (exclusive != null && exclusive == "True") {
+        url += "&exclusive=true";
+    }
+
+	document.frmMain.hdLink.value = url;
+	if (gSearch != "1")
+	{
+		window.location = url;	
+	}
+	else
+	{
+		frmMainSubmit('Link');
+		document.frmMain.submit();
+	}
+}
+function QSEncode(s)
+{
+	var ret = s.replace(/\=/g, "%3d").replace(/\?/g, "%3f").replace(/\&/g, "%26");
+	return ret;
+}
+function printSearch()
+{
+	var url = "../Search/PrintSearch.aspx?type=" + searchType + "&sIndex=" + gSearchIndex;
+	if (printInPopup == "Y")
+	{
+		window.open(url, null,'location=no, scrollbars=yes, menubar=yes, resizable=yes');
+	}
+	else
+	{
+		window.location.href(url);	
+	}
+}
+var DLG_SEARCH = "height=450, width=580, resizable=yes, status=no, titlebar=no";
+
+function OpenPopupSearch() {
+	var url = window.location.href + "&Smpl=1";
+	var ret = window.open(url, null, DLG_SEARCH);
+	
+}
+
+function GoToPage(n)
+{
+	var frm = document.frmMain; 
+	frm.PageNum.value = n;
+	if (webTV == "False")
+	{
+		setSelection();
+	}
+	frmMainSubmit('NewPage');
+	frm.submit();
+}
+
+function SortResults(event, colName) {
+	if (event.code === 'Space') {
+		SortResults(colName);
+    }
+}
+
+function SortResults(colName) 
+{
+	frm = document.frmMain;
+	frm.hdAction.value="SortBy";
+	if (frm.SortBy)
+	{
+		if (frm.SortBy.value == colName)
+		{
+			frm.SortDir.value = (frm.SortDir.value == " desc") ? " asc" : " desc";
+		} else {	
+			frm.SortBy.value = colName;
+			frm.SortDir.value = " asc";
+		}
+//		alert(frm.SortBy.value + ", " + frm.SortDir.value);
+		frm.submit();
+	} else {
+		alert("SortBy field not found");
+	}		
+}
+function setSelection() {
+/*
+	if (searchClient.indexOf("MSIE") == -1 || searchClient.indexOf("Windows") == -1)
+	{
+		return;
+	}
+*/
+	var selPins = "";
+	var unselPins = "";
+	var chkarray = document.getElementsByName('chkPin');
+	if (chkarray == null)
+	{
+		return;
+	}
+	var len = chkarray.length;
+	if (len == null)
+	{
+		chkarray = new Array(chkarray);
+		len = chkarray.length;
+	}
+	for (i = 0; i < len; i++)
+	{
+		if (chkarray[i].checked)
+		{
+			if (selPins.length > 0)
+			{
+				selPins += ",";
+			}
+			selPins += chkarray[i].value;
+		}
+		else
+		{
+			if (unselPins.length > 0)
+			{
+				unselPins += ",";
+			}
+			unselPins += chkarray[i].value;
+		}
+    }
+    var pars = SoapBuildInputParam("searchIndex", gSearchIndex);
+    pars += SoapBuildInputParam("selPins",  selPins, true);
+	pars += SoapBuildInputParam("unselPins", unselPins, true);
+	/*
+	var pars = BuildXmlString("searchIndex",  gSearchIndex);
+	pars += BuildXmlString("selPins", selPins);
+	pars += BuildXmlString("unselPins", unselPins);
+	*/
+	pinCount = SoapInvokeService("../Search/Services/SearchServices.asmx", "SetSelectedPins", pars);
+	return pinCount;
+}
+function getSelectedPins() {
+/*
+	if (searchClient.indexOf("MSIE") == -1)
+	{
+		return;
+	}
+*/
+//	var pars = BuildXmlString("searchIndex",  gSearchIndex);
+
+    //var pars = SoapBuildInputParam("searchIndex", gSearchIndex);
+	//var pins = SoapInvokeService("../Search/Services/SearchServices.asmx", "GetSelectedPins", pars);	
+    
+	var pins = getSelectedPinsXapi();
+
+	return pins;
+}
+
+function getSelectedPinsXapi() {
+    
+    var url = "/Search/Services/SearchServices.asmx";
+
+    var xmlHTTP;
+    if (window.XMLHttpRequest) {
+        xmlHTTP = new window.XMLHttpRequest;
+    }
+    else {
+        try {            
+             xmlHTTP = new ActiveXObject("Microsoft.XMLDOM"); 
+        }
+        catch (ex) {
+        }
+    }
+        
+    xmlHTTP.open("POST", applicationURL + url, false);
+    xmlHTTP.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+    xmlHTTP.setRequestHeader("SOAPAction", "http://tempuri.org/GetSelectedPins");
+
+    strRequest = "<?xml version='1.0' encoding='utf-8'?>";
+    strRequest = strRequest + "<soap:Envelope " +
+    "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' " +
+    "xmlns:xsd='http://www.w3.org/2001/XMLSchema' " +
+    "xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'>";
+    strRequest = strRequest + " <soap:Body>";
+    strRequest = strRequest + "<GetSelectedPins xmlns='http://tempuri.org/'><searchIndex>" + gSearchIndex + "</searchIndex></GetSelectedPins>";
+    strRequest = strRequest + "</soap:Body>";
+    strRequest = strRequest + "</soap:Envelope>";
+
+    var pins = "";
+    xmlHTTP.onreadystatechange = function () {
+        if (xmlHTTP.readyState == 4 && xmlHTTP.status == 200) {
+
+            var xmlResponse = xmlHTTP.responseXML.xml;
+            var xmlDoc = Xapi.CreateXmlDocument(xmlResponse);
+
+            pins = Xapi.GetSoapMessageText(xmlDoc);
+
+        }
+    }
+    xmlHTTP.send(strRequest);
+
+    return pins;
+}
+
+    
+function getSelected(val)
+{
+	if (val == null)
+	{
+		return;
+	}
+	var str = val;
+	var chkarray = document.getElementsByName('chkPin');
+	if (chkarray == null)
+	{
+		return;
+	}
+	var len = chkarray.length;
+	if (len == null)
+	{
+		chkarray = new Array(chkarray);
+		len = chkarray.length;
+	}
+	for(j = 0; j < len; j++ )
+	{
+		var chk = chkarray[j];
+		if (str.search(chk.value) == -1)
+		{
+			if (chk.checked == true)
+			{
+				if (str.length > 0)
+				{
+					str = str.concat(",");
+				}
+				str = str.concat(chk.value);
+			}
+		}
+		else
+		{
+			if (chk.checked == false)
+			{
+				var s = chk.value;
+				str = str.replace(s, "");
+				str = str.replace(",,", ",");
+				if (str.charAt(str.length - 1) == ",")
+				{
+					str = str.substr(0, str.length - 1);					
+				}
+				if (str.charAt(0) == ",")
+				{
+					str = str.substr(1);					
+				}
+//				str = str.replace(chk.value, "");//added for last pin which may not have comma
+			}
+		}
+	}
+	return str;
+}
+function getDeselected(val)
+{
+	if (val == null)
+	{
+		return;
+	}
+//	var str = new String(val);
+	var str = val;
+	var chkarray = document.getElementsByName('chkPin');
+	if (chkarray == null)
+	{
+		return;
+	}
+	var len = chkarray.length;
+	if (len == null)
+	{
+		chkarray = new Array(chkarray);
+		len = chkarray.length;
+	}
+	for(j = 0; j < len; j++ )
+	{
+		var chk = chkarray[j];
+		if (str.search(chk.value) == -1)
+		{
+			if (chk.checked == false)
+			{
+				if (str.length > 0)
+				{
+					str = str.concat(",");
+				}
+				str = str.concat(chk.value);
+			}
+		}
+		else
+		{
+			if (chk.checked == true)
+			{
+				var s = chk.value + ",";
+				str = str.replace(s, "");
+			}
+		}
+	}
+	return str;	
+}
+
+	</script>
+	
+</center>
+            
+					</td>
+				</tr>
+			</table>
+		</td>   
+		<!-- td width="10">&nbsp;</td -->	
+		<!-- td valign="top" height="400" rowspan=2 -->
+		
+	</tr>
+</table>
+
+</div></div>    
+  </td>
+    </tr>
+    </table>
+
+ <div id="RadWindow_NavigateUrl" style="display:none;">
+	<!-- 2022.2.622.45 --><div id="RadWindow_NavigateUrl_C" style="display:none;">
+
+	</div><input id="RadWindow_NavigateUrl_ClientState" name="RadWindow_NavigateUrl_ClientState" type="hidden" />
+</div>
+
+<input name="mode" type="hidden" id="mode" value="PARID" />
+<input name="mask" type="hidden" id="mask" />
+<input name="param1" type="hidden" id="param1" />
+<input name="searchimmediate" type="hidden" id="searchimmediate" />
+
+
+    
+
+<script type="text/javascript">
+//<![CDATA[
+window.__TsmHiddenField = $get('ScriptManager1_TSM');Sys.Application.add_init(function() {
+    $create(Telerik.Web.UI.RadWindow, {"_dockMode":false,"clientStateFieldID":"RadWindow_NavigateUrl_ClientState","formID":"frmMain","height":"700px","iconUrl":"","initialBehaviors":16,"minimizeIconUrl":"","modal":true,"name":"RadWindow_NavigateUrl","restrictionZoneID":"NavigateUrlZone","skin":"Default","width":"700px"}, null, null, $get("RadWindow_NavigateUrl"));
+});
+//]]>
+</script>
+</form>
+</body>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/soap.js"></script>
+<script type="text/javascript" src="../Search/Script/Search.js"></script>
+<script type="text/javascript" src="../Script/ParidControl.js"></script>
+<script type="text/javascript" src="../script/xapi.js"></script>
+
+
+
+<script type="text/javascript">
+//var url = "../Search/AppendToList.aspx?frameset=1&ListType=" + ListType + "&sIndex=" + sIndex + "&fromMap=" + fromMap;
+
+var searchType = "PARID";
+var useParcelMask = "false";
+var Labels = "";
+var Fields = "";
+var MinLengths = "";
+var Required = "Parid";
+var siteMultijur = "False";
+var siteJur = "129";
+var siteYear = "2026";
+var useParcelMask = "false";
+    var jur = "129";
+
+    function openWinNavigateUrl(url) {
+        //debugger;
+        //var url = "../Search/AppendToList.aspx?frameset=1&ListType=" + ListType + "&sIndex=" + sIndex + "&fromMap=" + fromMap;
+        var _window = $find("RadWindow_NavigateUrl");
+            _window.setUrl(url);
+            _window.show();
+    }
+
+function MaskParcel(val, clear) {
+    if (useParcelMask == "true") {
+        if (val == null) {
+            if (filterJur != null) {
+                jur = filterJur.value;
+            }
+        }
+        else {
+            jur = val;
+        }
+        if (jur == null || jur.length == 0) {
+            jur = "*";
+        }
+        var parid = document.getElementById("inpParid");
+        //parid.value = parid.value.replace(/\*/gi, "");
+        var ctrl = parid.ParidControl;
+        if (ctrl == null) {
+            if (searchType == "PERSPROP") {
+                new Tyler.Controls.ParidControl(parid, jur, true, null, 'PPACCT');
+            }
+            else {
+                new Tyler.Controls.ParidControl(parid, jur, true, null);
+            }
+        }
+        else {
+            ctrl.setJur(jur);
+        }
+        ctrl = parid.ParidControl;
+        parid.value = ctrl.getValue();
+        //alert(parid.value);
+        parid.style.display = "none";
+        for (var i = 0; 1 == 1; i++) {
+            var item = document.getElementById("inpParId_seg" + i.toString());
+            if (item == null) {
+                break;
+            }
+            else {
+                if (clear == true) {
+                    item.value = "";
+                }
+                else
+                {
+                    //item.onchange = null;
+                    if (jur == "*") {
+                        item.value = replaceAll(item.value, "*", "");
+                    }
+                    if (i == 0) {
+                        try {
+                            seg.focus();
+                        }
+                        catch (e) {
+                        }
+                    }
+                }
+            }
+            item.display = "block";
+        }
+    }
+}
+function CheckExpired() {
+	var ctl = document.frmMain.selSortBy;
+	if (ctl == null) return;
+	if (ctl.value == "") {
+		alert("This page has expired and will be reloaded automatically");
+		window.location.href = window.location.href + "&r=1";
+	}
+}
+//CheckExpired();
+function Init(frm) {
+     
+
+    if (useParcelMask != null && useParcelMask == "true") {
+        var filterJurCtl = document.getElementById("inpJur");
+        if (filterJurCtl == null) {
+            filterJurCtl = document.getElementById("searchFilter_LovCtrl_txtItems");
+            if (filterJurCtl != null) {
+                jur = filterJurCtl.value;
+                if (jur == null || jur == "-1" || jur == "") {
+                    jur = "*";
+                }
+            }
+        }
+        else {
+            jur = filterJurCtl.value;
+            if (jur == null || jur == "-1" || jur == "") {
+                jur = "*";
+            }
+        }
+        var clear = false;
+        var hdJur = document.getElementById("hdJur");
+        if (hdJur != null && hdJur.value != jur) {
+            hdJur.value = jur;
+            clear = true;
+            var mask = document.getElementById("mask");
+            if (mask != null) {
+                mask.value = "";
+            }
+        }
+        
+        MaskParcel(jur, clear);
+    }
+	if (frmMain.selSortBy && frmMain.SortBy)
+	{
+		frmMain.selSortBy.value = frmMain.SortBy.value;
+	}
+	if (frmMain.selSortDir && frmMain.SortDir)
+	{
+		frmMain.selSortDir.value = frmMain.SortDir.value;
+	}
+	if (frmMain.PageSize && frmMain.selPageSize)
+	{
+		frmMain.selPageSize.value = frmMain.PageSize.value;
+	}
+	if (searchType == "BLQ")
+	{
+	    var parid	= document.getElementById("inpParid");
+	    var block	= document.getElementById("inpBlock");
+	    var paridVal = (parid) ? trim(parid.value) : "";
+	    if (paridVal.length > 0)
+	    {
+		    setblqFields(parid)
+	    }
+	    else
+	    {
+		    setblqFields(block)
+	    }
+	}
+	
+	var mask = document.getElementById("mask");
+	if (mask.value.length > 0 && useParcelMask == "true")
+	{
+	    var parts = mask.value.split('|');
+	    var i = 0;
+	    var seg = document.getElementById("inpParid_seg" + i);
+	    while(seg != null)
+	    {
+	        seg.value = parts[i];
+	        i++;
+	        seg = document.getElementById("inpParid_seg" + i);
+	    }
+	}
+	var flds = document.frmMain;
+	var len = 0;
+	if (flds != null)
+	{
+		len = flds.length;
+		if (len != null)
+		{
+			for (var i = 0; i < len; i++)
+			{
+				var el = flds[i];
+				if (el.type == "text" && el.disabled == false)
+				{
+				    try {
+				        el.focus();
+				    }
+				    catch (e) {
+				    }
+					break;
+				}
+			}
+		}
+    }
+
+	setTimeout(setFocus, 300);
+    try {
+        //will only close the drop-down on initial load...
+        
+        //setTimeout(searchFilter_LovCtrlCloseJurList, 1);
+    }
+    catch(e)
+    {}
+}
+
+function setFocus() {
+    var resultsTable = document.getElementById('searchResults');
+    var errorLbl = document.getElementById('errorLbl');
+    var field = document.getElementById('inp' + Required);
+
+    if (resultsTable != null) {
+        resultsTable.focus();
+    } else if (errorLbl != null) {
+        errorLbl.focus();
+    } else if (field != null && Required.length > 0) {
+        field.focus();
+    }
+}
+function changeOrder(el)
+{
+	document.frmMain.SortBy.value = el.value;
+}
+function changeDir(el)
+{
+	document.frmMain.SortDir.value = el.value;
+}
+function startSearch()
+{
+	document.frmMain.PageNum.value = 1; 
+	return frmMainSubmit('Search');
+}
+function frmMainSubmit(action) {
+    //setTimeout(searchFilter_LovCtrlCloseJurList, 1);//close drop-down on submit
+    document.frmMain.hdAction.value = action;
+	document.frmMain.action = "CommonSearch.aspx?mode=" + document.frmMain.mode.value;
+	if ((document.frmMain.mode.value == "PARID" || document.frmMain.mode.value == "REALPROP" || document.frmMain.mode.value == "PERSPROP") && useParcelMask == "true") {
+	    var parid = document.getElementById("inpParid");
+	    var ctl = parid.ParidControl;
+	    if (ctl == null) return;
+	    var value = ctl.getValue();
+	    parid.value = value;
+	    var mask = "";
+	    var i = 0;
+	    var seg = document.getElementById("inpParid_seg" + i);
+	    while (seg != null)
+	    {
+	        if (i > 0) {
+	            mask += "|";
+	        }
+	        mask += seg.value;
+	        i++;
+	        seg = document.getElementById("inpParid_seg" + i);
+	    }
+	    document.getElementById("mask").value = mask;
+	}    
+	return Validate();
+}
+function Validate()
+{
+	//try
+	//{
+    //    var filterValue = searchFilter_LovCtrl_IsValid();
+    //    if (filterValue == false)
+    //    {
+    //        return false;
+    //    }
+    //}
+    //catch(e){};
+	var doc = document.all;
+	var Lbls = new Array(Labels.split(","));
+	var Flds = new Array(Fields.split(","));
+	var MLns = new Array(MinLengths.split(","));
+	if (Flds.length == 0)
+	{
+		return true;
+	} 
+	for (var i = 0; i < Lbls.length; i++)
+	{
+		var Name  = Lbls[i];
+		var Field = Flds[i];
+		var form = document.frmMain;
+		var el = null;
+		for (var j = 0; j < form.length; j++)
+		{
+			var obj = form[j];
+			if (obj != null && obj.name == Field)
+			{
+				el = obj;
+				break;
+			}
+		}
+		if (el == null)
+		{
+			return true;
+		}
+		var mLen  = MLns[i];
+		var val = el.value;
+		if (doc != null)
+		{
+			val = trim(val);
+		}
+		if (val.length > 0 && doc != null)
+		{
+//			var ch = "";
+			ch = val.substr(val.length - 1, 1);
+			val = replaceAll(val, "%", "");
+			val = replaceAll(val, "*", "");
+//			if (ch == "*")
+//			{
+//				val += ch;
+//				++mLen;
+//			}
+			el.value = val;
+		}
+		if (val.length <  mLen)
+		{
+			alert("Please enter at least " + mLen + " symbol(s) in " + Name);
+			if (el != null)
+			{
+				el.focus();
+			}
+			return false;
+		}
+	}
+	return true;
+}
+function validateOwner()
+{
+	var doc = document.all;
+	var Lbls = new Array(Labels.split(","));
+	var Flds = new Array(Fields.split(","));
+	var MLns = new Array(MinLengths.split(","));
+	if (Flds.length == 0)
+	{
+		return true;
+	} 
+	for (var i = 0; i < Lbls.length; i++)
+	{
+		var Name  = Lbls[i];
+		var Field = Flds[i];
+		var form = document.frmMain;
+		var el = null;
+		for (var j = 0; j < form.length; j++)
+		{
+			var obj = form[j];
+			if (obj != null && obj.name == Field)
+			{
+				el = obj;
+				break;
+			}
+		}
+		if (el == null)
+		{
+			return true;
+		}
+		var mLen  = MLns[i];
+		var val = el.value;
+		if (doc != null)
+		{
+			val = trim(val);
+			var ch = "";
+		}
+		if (val.length > 0 && doc != null)
+		{
+			ch = val.substr(val.length - 1, 1);
+			val = replaceAll(val, "%", "");
+			val = replaceAll(val, "*", "");
+			if (ch == "*")
+			{
+				val += ch;
+				++mLen;
+			}
+			el.value = val;
+		}
+		if (val.length <  mLen)
+		{
+			alert("Please enter at least 2 symbols in " + Name);
+			document.frmMain.inpOwner.focus();
+			return false;
+		}
+	}
+	return true;
+}
+function clearAction(el)
+{
+    //alert("test");
+	frmMain.hdAction.value = "";
+	return true;
+}
+
+
+</script>
+</div></section></div></div><footer><div id='footerarea' ><div id='footercontent' ><div id="dvFooter" style="clear:both;&#32;text-align:center;">
+<div id="sealContainer">
+	<img alt="" src="../images/custom/seal.png"></img>
+</div>
+
+<div id="footerRow">
+	<div class="column first">
+		<H1><a href="http://www.fairfaxcounty.gov/publicaffairs/awards">Awards</a></H1>
+		<H1><a href="http://www.fairfaxcounty.gov/topics/sitefeedback">Site Feedback</a></H1>
+	</div>
+	<div class="column second">
+			<H2>Main Address</H2>
+		<p>12000 Government Center Pkwy<br>
+		Fairfax, VA 22035</p>
+			<H3>Phone</H3>
+		<p><a href="tel:703-FAIRFAX">703-FAIRFAX</a></p>
+			<H4>TTY</H4>&nbsp;711
+	</div>
+	<div class="column third">
+			<H2>Site Tools</H2>
+		<p><a href="http://www.fairfaxcounty.gov/topics/webaccessibility">Website Accessibility</a></p>
+		<p><a href="http://www.fairfaxcounty.gov/topics/languagetranslation">Translate</a></p>
+		<p><a href="http://www.fairfaxcounty.gov/topics/mobile">Download Mobile App</a></p>
+	</div>
+	<div class="column fourth">
+			<H2>Support</H2>
+		<p><a href="http://www.fairfaxcounty.gov/topics/accessibility">ADA Accessibility</a></p>
+		<p><a href="http://www.fairfaxcounty.gov/publicaffairs/foia">FOIA Requests</a></p>
+		<p><a href="http://www.fairfaxcounty.gov/contact/MailForm.aspx?agID=100387">Website Administrator</a></p>
+	</div>
+	<div class="column fifth">
+			<H2>Additional Resources</H2>
+		<p><a href="http://www.fcps.edu">Fairfax County Public Schools</a></p>
+		<p><a href="http://www.fairfaxcountyeda.org">Economic Development Authority</a></p>
+		<p><a href="http://www.fxva.com">Visit Fairfax</a></p>
+		<p><a href="http://www.mwcog.org">Council of Governments</a></p>
+		<p><a href="http://www.virginia.gov">Commonwealth of Virginia</a></p>
+		<p><a href="http://www.usa.gov">USA.gov</a></p>
+	</div>
+</div>
+<div id="bottomRow">
+	<div id="socialMedia">
+		<div class="socialMedia-icon">
+			<a href="https://www.fairfaxcounty.gov/topics/events-meetings">
+				<img alt="" src="../images/custom/calender.png"></img>
+		<!--		<i class="fa fa-calendar fa-2x"></i>  -->
+			</a>
+		</div>
+		<div class="socialMedia-icon">
+			<a href="https://www.fairfaxcounty.gov/cableconsumer/channel-16/fairfax-county-government-television">
+			<img alt="" src="../images/custom/16.png"></img>
+			<!-- <div id="socialMedia-ch16-icon"></div> -->
+			</a>
+		
+		</div>
+		<div class="socialMedia-icon">
+			<a href="https://www.fairfaxcounty.gov/topics/alerts-and-emails">
+			<img alt="" src="../images/custom/Mail.png"></img>
+			<!--	<i class="fa fa-envelope-open fa-2x"></i>  -->
+			</a>
+		</div>
+		<div class="socialMedia-icon">
+		<a href="https://www.fairfaxcounty.gov/alerts">
+		<img alt="" src="../images/custom/Shield.png"></img>
+		<!--	<i class="fa fa-shield fa-2x"></i>  -->
+			</a>
+		</div>
+		<div class="socialMedia-icon">
+		<a href="http://www.fairfaxcountyemergency.wordpress.com">
+		<img alt="" src="../images/custom/Internet.png"></img>
+		<!--	<i class="fa fa-wifi fa-2x"></i> -->
+				
+			</a>
+		</div>
+		<div class="socialMedia-icon">
+			<a href="https://www.facebook.com/fairfaxcounty">
+			<img alt="" src="../images/custom/Facebook.png"></img>
+			<!--	<i class="fa fa-facebook fa-2x"></i>   -->
+			</a>
+		</div>
+		<div class="socialMedia-icon">
+			<a href="https://www.twitter.com/fairfaxcounty">
+			<img alt="" src="../images/custom/Twitter.png"></img>
+			<!--	<i class="fa fa-twitter fa-2x"></i>   -->
+			</a>
+		</div>
+		<div class="socialMedia-icon">
+			<a href="https://www.instagram.com/fairfaxcounty">
+			<img alt="" src="../images/custom/Snapchat.png"></img>
+			<!--	<i class="fa fa-instagram fa-2x"></i>  -->
+			</a>
+		</div>
+		<div class="socialMedia-icon">
+			<a href="https://www.youtube.com/fairfaxcounty">
+			<img alt="" src="../images/custom/YouTube.png"></img>
+			<!--	<i class="fa fa-youtube fa-2x"></i>   -->
+			</a>
+		</div>
+		<div class="socialMedia-icon">
+			<a href="https://www.fairfaxcounty.gov/topics/mobile">
+			<img alt="" src="../images/custom/Phone.png"></img>
+			<!--	<i class="fa fa-mobile fa-2x"></i>  -->
+			</a>
+		</div>
+	</div>
+	<div id="copyright">
+		<p>Copyright 2019 Fairfax County, Virginia    |    Last Updated: <span>November  05, 2025</span>    |    Powered by <a href="http://www.tylertech.com">iasWorld Public Access</a></p>
+	</div>
+</div></div>
+<script>
+var tmpLate = "../images/cur_template";
+function getTmpLate(par)
+{
+	return tmpLate + par;
+}
+</script>
+
+
+</div></div></footer></body><script language=JavaScript>window.setTimeout("window.location.replace('../main/timeout.aspx')", 3590000);</script></html>

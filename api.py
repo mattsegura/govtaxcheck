@@ -3,12 +3,14 @@ FastAPI application for multi-county property and tax searches.
 
 Supports multiple counties:
 - Fairfax County, VA
+- Travis County, TX
 - Mecklenburg County, NC (coming soon)
 
 Endpoints:
 - GET /counties - List available counties
 - POST /search/address - Search properties by address
-- GET /search/map/{map_number} - Search by map number
+- GET /search/map/{county}/{map_number} - Search by map/property number
+- GET /search/map/{map_number} - Legacy endpoint (defaults to Fairfax)
 - GET /tax-summary - Get tax summary for a property
 
 Install dependencies:
@@ -37,6 +39,10 @@ from icare_address_search import (
     parse_currency,
     format_currency,
 )
+from travis_county_search import (
+    search_travis_property,
+    fetch_travis_property_details,
+)
 
 app = FastAPI(
     title="Multi-County Property Search API",
@@ -62,7 +68,17 @@ SUPPORTED_COUNTIES = {
         "state": "Virginia",
         "state_abbr": "VA",
         "features": ["address_search", "map_search", "tax_summary"],
-        "description": "Fairfax County, Virginia property and tax search"
+        "description": "Fairfax County, Virginia property and tax search",
+        "search_term": "Map Number"
+    },
+    "travis-tx": {
+        "id": "travis-tx",
+        "name": "Travis County",
+        "state": "Texas",
+        "state_abbr": "TX",
+        "features": ["property_search"],
+        "description": "Travis County, Texas property search by property ID",
+        "search_term": "Property ID"
     },
     "mecklenburg-nc": {
         "id": "mecklenburg-nc",
@@ -71,7 +87,8 @@ SUPPORTED_COUNTIES = {
         "state_abbr": "NC",
         "features": ["parcel_search"],
         "description": "Mecklenburg County, North Carolina property search via parcel ID (coming soon)",
-        "status": "coming_soon"
+        "status": "coming_soon",
+        "search_term": "Parcel ID"
     }
 }
 
@@ -274,10 +291,12 @@ async def search_by_map_number(county: str, map_number: str):
             detail=f"{county_info['name']} map search is coming soon"
         )
 
-    if "map_search" not in county_info.get("features", []) and "parcel_search" not in county_info.get("features", []):
+    # Check if county has the appropriate search feature
+    valid_features = ["map_search", "parcel_search", "property_search"]
+    if not any(feature in county_info.get("features", []) for feature in valid_features):
         raise HTTPException(
             status_code=501,
-            detail=f"{county_info['name']} does not support map/parcel search"
+            detail=f"{county_info['name']} does not support property/map/parcel search"
         )
 
     session = requests.Session()
@@ -285,21 +304,55 @@ async def search_by_map_number(county: str, map_number: str):
     try:
         # Route to appropriate county scraper
         if county == "fairfax-va":
+            # Log the original map number
+            print(f"Searching for map number: {map_number}")
             results, _ = search_fairfax_map_number(
                 map_number=map_number,
                 session=session,
             )
+            print(f"Search returned {len(results)} results")
+        elif county == "travis-tx":
+            # Travis County uses property ID search
+            print(f"Searching Travis County for property ID: {map_number}")
+            results, _ = search_travis_property(
+                property_id=map_number,
+                session=session,
+            )
+            print(f"Search returned {len(results)} results")
         else:
             raise HTTPException(
                 status_code=501,
-                detail=f"{county_info['name']} map search not yet implemented"
+                detail=f"{county_info['name']} search not yet implemented"
             )
 
         if not results:
-            raise HTTPException(
-                status_code=404,
-                detail=f"No property found with map number: {map_number}"
-            )
+            # Try different formatting if initial search fails
+            if county == "fairfax-va" and map_number.replace(" ", "").isdigit():
+                # Try with spaces if no spaces were provided
+                if " " not in map_number:
+                    map_clean = map_number.replace(" ", "")
+                    # Try 4-2-4 format for 10 digits
+                    if len(map_clean) == 10:
+                        map_formatted = f"{map_clean[0:4]} {map_clean[4:6]} {map_clean[6:10]}"
+                        print(f"Retrying with formatted map number: {map_formatted}")
+                        results, _ = search_fairfax_map_number(
+                            map_number=map_formatted,
+                            session=session,
+                        )
+                        print(f"Formatted search returned {len(results)} results")
+
+            if not results:
+                # Provide more detailed error message
+                error_msg = (
+                    f"No property found with map number: {map_number}. "
+                    f"Please verify the map number is correct. "
+                    f"Expected format for Fairfax County: 10 digits (e.g., 0812030026). "
+                    f"The system will automatically format it with spaces."
+                )
+                raise HTTPException(
+                    status_code=404,
+                    detail=error_msg
+                )
 
         # Get the first result (should be exact match)
         property_data = results[0]
@@ -313,43 +366,62 @@ async def search_by_map_number(county: str, map_number: str):
                 "message": "Property found but no detail URL available"
             }
 
-        # Fetch tax summary
+        # Fetch additional details based on county
         try:
-            tax_summary = fetch_fairfax_tax_summary(session, detail_url)
+            if county == "fairfax-va":
+                # Fetch Fairfax County tax summary
+                tax_summary = fetch_fairfax_tax_summary(session, detail_url)
 
-            # Convert tax summary for JSON
-            periods = []
-            for period in tax_summary.get("periods", []):
-                periods.append({
-                    "year": period["year"],
-                    "label": period["label"],
-                    "amount_paid": period["amount_paid_display"],
-                    "balance_due": period["balance_due_display"],
-                    "amount_paid_decimal": float(period["amount_paid"]),
-                    "balance_due_decimal": float(period["balance_due"]),
-                })
+                # Convert tax summary for JSON
+                periods = []
+                for period in tax_summary.get("periods", []):
+                    periods.append({
+                        "year": period["year"],
+                        "label": period["label"],
+                        "amount_paid": period["amount_paid_display"],
+                        "balance_due": period["balance_due_display"],
+                        "amount_paid_decimal": float(period["amount_paid"]),
+                        "balance_due_decimal": float(period["balance_due"]),
+                    })
 
-            total = tax_summary.get("total", {})
-            total_data = {
-                "year": total.get("year", "Total"),
-                "label": total.get("label", ""),
-                "amount_paid": total.get("amount_paid_display", "$0.00"),
-                "balance_due": total.get("balance_due_display", "$0.00"),
-                "amount_paid_decimal": float(total.get("amount_paid", 0)),
-                "balance_due_decimal": float(total.get("balance_due", 0)),
-            }
-
-            return {
-                "success": True,
-                "property": property_data,
-                "tax_summary": {
-                    "title": tax_summary.get("title", "Tax Summary"),
-                    "stub_number": tax_summary.get("stub_number"),
-                    "tax_year_code": tax_summary.get("tax_year_code", ""),
-                    "periods": periods,
-                    "total": total_data,
+                total = tax_summary.get("total", {})
+                total_data = {
+                    "year": total.get("year", "Total"),
+                    "label": total.get("label", ""),
+                    "amount_paid": total.get("amount_paid_display", "$0.00"),
+                    "balance_due": total.get("balance_due_display", "$0.00"),
+                    "amount_paid_decimal": float(total.get("amount_paid", 0)),
+                    "balance_due_decimal": float(total.get("balance_due", 0)),
                 }
-            }
+
+                return {
+                    "success": True,
+                    "property": property_data,
+                    "tax_summary": {
+                        "title": tax_summary.get("title", "Tax Summary"),
+                        "stub_number": tax_summary.get("stub_number"),
+                        "tax_year_code": tax_summary.get("tax_year_code", ""),
+                        "periods": periods,
+                        "total": total_data,
+                    }
+                }
+            elif county == "travis-tx":
+                # For Travis County, fetch property details
+                property_details = fetch_travis_property_details(detail_url, session)
+
+                return {
+                    "success": True,
+                    "property": property_data,
+                    "property_details": property_details,
+                    "message": "Travis County property details retrieved"
+                }
+            else:
+                # For other counties, just return the property data
+                return {
+                    "success": True,
+                    "property": property_data,
+                    "message": f"Property found in {county_info['name']}"
+                }
 
         except (requests.RequestException, ValueError) as exc:
             # Return property data even if tax summary fails

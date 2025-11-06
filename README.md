@@ -1,6 +1,12 @@
-# Fairfax County Property Search API
+# Multi-County Property Search API
 
-A FastAPI application for searching properties and retrieving tax information from Fairfax County iCare.
+A FastAPI application for searching properties and retrieving tax information from multiple counties across the United States.
+
+## Supported Counties
+
+- **Fairfax County, Virginia** - Full property and tax search by map number
+- **Travis County, Texas** - Property search by property ID
+- **Mecklenburg County, NC** - Coming soon
 
 ## 🚀 Quick Deploy to Render (Free)
 

@@ -121,19 +121,22 @@ def search_fairfax_map_number(
 ) -> Tuple[List[Dict[str, str]], str]:
     """Perform a map number search and return parsed rows plus the raw HTML.
 
-    Map number format: "0812 03 0026" or "0812030026" (will be normalized to "0812 03 0026")
+    Map number format: "0812 03  0026" or "0812030026" (will be normalized to "0812 03  0026" with double space)
     """
     session = session or requests.Session()
 
     # Normalize map number - remove all spaces
     map_clean = map_number.replace(" ", "")
 
-    # If we have exactly 10 digits, format it as: XXXX XX XXXX (single spaces)
+    # If we have exactly 10 digits, format it as: XXXX XX  XXXX (with double space between second and third group)
     if len(map_clean) == 10 and map_clean.isdigit():
-        map_formatted = f"{map_clean[0:4]} {map_clean[4:6]} {map_clean[6:10]}"
+        map_formatted = f"{map_clean[0:4]} {map_clean[4:6]}  {map_clean[6:10]}"  # Note the double space
     else:
         # Use as-is if it doesn't match expected format
         map_formatted = map_number
+
+    print(f"[DEBUG] Map number input: '{map_number}'")
+    print(f"[DEBUG] Map number formatted: '{map_formatted}'")
 
     initial = session.get(MAP_NUMBER_SEARCH_URL, timeout=30)
     initial.raise_for_status()
@@ -149,9 +152,14 @@ def search_fairfax_map_number(
         }
     )
 
+    print(f"[DEBUG] Sending POST with inpParid: '{map_formatted}'")
     response = session.post(MAP_NUMBER_SEARCH_URL, data=payload, timeout=30)
     response.raise_for_status()
-    return parse_results_table(response.text), response.text
+
+    results, html = parse_results_table(response.text), response.text
+    print(f"[DEBUG] Found {len(results)} results")
+
+    return results, html
 
 
 def parse_currency(value: str) -> Decimal:
